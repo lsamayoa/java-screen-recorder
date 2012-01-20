@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="screen_converter">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="screen_converter.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="external/jmf.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete file="screen_converter.jar"/>
+    </target>
+    <target name="pre-build">
+        <unzip src="external/jarinjarloader.zip" dest="bin"/>
+        <copy todir="bin">
+            <fileset dir="external">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+    <target depends="pre-build,build-project,dist" name="build"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="screen_converter.classpath"/>
+        </javac>
+    </target>
+    <target name="JRecorder">
+        <java classname="com.wet.wired.jsr.converter.RecordingConverter" failonerror="true" fork="yes">
+            <classpath refid="screen_converter.classpath"/>
+        </java>
+    </target>
+    <target name="dist" description="generate the jar file">
+        <jar jarfile="screen_converter.jar" basedir="bin">
+        <manifest>
+            <attribute name="Rsrc-Class-Path" value="./ jmf.jar"/>
+            <attribute name="Class-Path" value="."/> 
+            <attribute name="Rsrc-Main-Class" value="com.wet.wired.jsr.converter.RecordingConverter"/>             
+            <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+        </manifest>
+        </jar>
+    </target>
+</project>

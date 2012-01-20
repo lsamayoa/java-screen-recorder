@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="screen_player">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="screen_player.classpath">
+        <pathelement location="bin"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete file="screen_player.jar"/>
+    </target>
+    <target depends="build-project,dist" name="build"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="screen_player.classpath"/>
+        </javac>
+    </target>
+    <target name="JPlayer">
+        <java classname="com.wet.wired.jsr.player.JPlayer" failonerror="true" fork="yes">
+            <classpath refid="screen_player.classpath"/>
+        </java>
+    </target>
+    <target name="dist" description="generate the jar file">
+        <jar jarfile="screen_player.jar" basedir="bin">
+        <manifest>
+            <attribute name="Main-Class" value="com.wet.wired.jsr.player.JPlayer"/>
+        </manifest>
+        </jar>
+    </target>
+</project>
